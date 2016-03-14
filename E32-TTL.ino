@@ -11,11 +11,11 @@
 
 
 
-#define M0 8
-#define M1 9
+#define M0 12
+#define M1 11
 #define SOFT_TX 10
-#define SOFT_RX 11
-#define AUX 12
+#define SOFT_RX 9
+#define AUX 8
 
 #define MODE_SWITCH 13
 
@@ -45,19 +45,48 @@ void setup() {
 
 }
 
+#define MODE0 "z"
+#define MODE1 "x"
+#define MODE2 "c"
+#define MODE3 "v"
 
-
-// the loop function runs over and over again forever
-void loop1() {
-  if(Serial.available()>0) {
-    
-    char input = Serial.read();
-    Serial.println("X");
+// set E32-TTL mode
+char set_mode(char mode) {
+  char m0 = 0;
+  char m1 = 0;
+  
+  switch(mode) {
+    // working
+    case 0: 
+      m0=0;
+      m1=0;
+      break;
+    // wake-up
+    case 1: 
+      m0=0;
+      m1=1;
+      break;
+    // power-saving
+    case 2:
+      m0=1;
+      m1=0;
+      break;
+    // sleep
+    case 3: 
+      m0=1;
+      m1=1;
+      break;   
+    default:
+      return false;
   }
+
+  digitalWrite(M0, m0);
+  digitalWrite(M1, m1);      
+  
+  return true;
 }
 
-
-
+// the loop function runs over and over again forever
 void loop() {
   if(Serial.available()>0) {
     delay(10);
